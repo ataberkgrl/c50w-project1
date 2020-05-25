@@ -1,4 +1,4 @@
-# CS50W-Project 1
+# CS50W - Project 1
 
 Book review website project for CS50W course which is offered by Harvard at edX
 
