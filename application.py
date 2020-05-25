@@ -6,11 +6,9 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session, sessionmaker
 import bcrypt
 import requests
-import database_api_configs
 
 app = Flask(__name__)
-api_key = database_api_configs.apikey
-os.environ["DATABASE_URL"] = database_api_configs.database_url
+api_key = os.environ["API_KEY"]
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
