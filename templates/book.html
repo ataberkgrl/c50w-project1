@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block body %}
+    <div id="bookinfobanner">
+        <h1 id="infopagetitle">{{book.title}}</h1>
+        <div id="bookinfodetails">
+            <p style="border-right: 1px solid black;">Author: {{book.author}}</p>
+            <p>Release Year: {{book.year}}</p>
+            <p style="border-left: 1px solid black;">ISBN: {{book.isbn}}</p>
+            <p style="border-left: 1px solid black;">Rating (Count): {{api_averagerating}} ({{api_numofratings}})</p>
+        </div>
+    </div>
+    <form action="/book/{{ book.isbn }}" id="addreview" method="POST">
+        <h3>Submit Review</h3>
+        <textarea required class="form-control" name="review_text" id="review_text" rows="3"></textarea>
+        <div id="undertextarea">
+            <div id="review_score_area">
+                <label class="mr-sm-2" for="inlineFormCustomSelect">Book Rating:</label>
+                <select required class="custom-select mr-sm-2" name="review_score" id="review_score">
+                    <option value="" hidden disabled selected>Choose</option>
+                    <option value="1">1/5</option>
+                    <option value="2">2/5</option>
+                    <option value="3">3/5</option>
+                    <option value="4">4/5</option>
+                    <option value="5">5/5</option>
+                </select>
+            </div>
+            <button class="btn btn-warning my-2 my-sm-0" type="submit">Submit Your Review</button>
+        </div>
+    </form>
+    <div id="reviews">
+        <h3>Reviews</h3>
+        {% for review in reviews %}
+            <div id="reviewbox">
+                <div id="rating">
+                    {% for i in range(review.review_score) %}
+                        <span class="fa fa-star checked"></span>
+                    {% endfor %}
+                    {% for i in range(5 - review.review_score) %}
+                        <span class="fa fa-star"></span>
+                    {% endfor %}
+                </div>
+                <p>{{ review.review_text }}</p>
+                <div id="review_details">
+                    <p> Reviewed by {{ review.username }}</p>
+                    <p>Review Date: {{ review.review_time }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
