@@ -6,10 +6,11 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session, sessionmaker
 import bcrypt
 import requests
+import database_api_configs
 
 app = Flask(__name__)
-apikey = "VDLxhzFoveT9ob1BzA90g"
-os.environ["DATABASE_URL"] = "postgres://lhkhbzmghhikvc:ff665e193cfb6182f3acc398731ec35f820e31f3174af485ce58880f30165ed8@ec2-46-137-123-136.eu-west-1.compute.amazonaws.com:5432/d79h0mvb15v6u4"
+api_key = database_api_configs.apikey
+os.environ["DATABASE_URL"] = database_api_configs.database_url
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -101,7 +102,7 @@ def book(isbn):
         else:
             return redirect(url_for("login"))
     else:
-        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": apikey, "isbns":isbn}).json()
+        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": api_key, "isbns":isbn}).json()
         api_averagerating = res["books"][0]["average_rating"]
         api_numofratings = res["books"][0]["work_reviews_count"]
         book = db.execute(text("SELECT * FROM books WHERE books.isbn = :isbn"), {"isbn":isbn}).fetchone()
@@ -112,7 +113,7 @@ def book(isbn):
 def api(isbn):
     book = db.execute(text("SELECT title, author, year FROM books WHERE isbn = :isbn"), {"isbn":isbn}).fetchone()
     if len(book) != 0:
-        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": apikey, "isbns":isbn})
+        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": api_key, "isbns":isbn})
         json_book = dict()
         json_book["title"] = book.title
         json_book["author"] = book.author
