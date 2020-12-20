@@ -1,6 +1,6 @@
 # CS50W - Project 1
 
-**Since Goodreads decided to retire their API keys, book pages doesn't work anymore**
+**Since Goodreads decided to retire their API keys, book pages doesn't work anymore.**
 
 Book review website project for CS50W course which was offered by Harvard at edX
 
