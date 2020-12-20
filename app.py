@@ -102,25 +102,24 @@ def book(isbn):
         else:
             return redirect(url_for("login"))
     else:
-        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": api_key, "isbns":isbn}).json()
-        api_averagerating = res["books"][0]["average_rating"]
-        api_numofratings = res["books"][0]["work_reviews_count"]
+        #res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": api_key, "isbns":isbn}).json()
+        #api_averagerating = res["books"][0]["average_rating"]
+        #api_numofratings = res["books"][0]["work_reviews_count"]
         book = db.execute(text("SELECT * FROM books WHERE books.isbn = :isbn"), {"isbn":isbn}).fetchone()
         reviews = db.execute(text("SELECT reviews.review_time, reviews.review_text, reviews.review_score, users.username FROM reviews FULL JOIN users ON users.user_id = reviews.reviewer_id WHERE reviewed_book_isbn = :isbn ORDER BY reviews.review_time DESC"), {"isbn":isbn}).fetchall()
-        return render_template("book.html", book=book, reviews=reviews, api_averagerating=api_averagerating, api_numofratings=api_numofratings)
+        return render_template("book.html", book=book, reviews=reviews)
 
 @app.route("/api/<isbn>")
 def api(isbn):
     book = db.execute(text("SELECT title, author, year FROM books WHERE isbn = :isbn"), {"isbn":isbn}).fetchone()
     if len(book) != 0:
-        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": api_key, "isbns":isbn})
         json_book = dict()
         json_book["title"] = book.title
         json_book["author"] = book.author
         json_book["year"] = book.year
         json_book["isbn"] = isbn
-        json_book["review_count"] = res.json()["books"][0]["reviews_count"]
-        json_book["average_score"] = res.json()["books"][0]["average_rating"]
+        #json_book["review_count"] = res.json()["books"][0]["reviews_count"]
+        #json_book["average_score"] = res.json()["books"][0]["average_rating"]
         return jsonify(json_book)
     else:
         return render_template("error.html", error_message="404 - Couldn't find a book with that ISBN"), 404
